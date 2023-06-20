@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>月耗电量</title>
+    <script src="../js/echarts.js"></script>
+    <link rel="stylesheet" href="../css/energy-exam.css" />
+</head>
+<body>
+<div id="whole_system">
+    <div class="chart_title">
+        <div style="margin-left: 20px;margin-top: 3px">月耗电量</div>
+    </div>
+    <div class="chart_line"></div>
+    <div class="chart_text">月耗电量</div>
+    <div id="monthPowerConsumption" class="chart_digital">379946 kwh</div>
+    <div id="chart_main" class="chart_chart"></div>
+</div>
+
+<script type="module">
+    import {month_power_consumption} from '../exam_js/month-power-consumption-exam.js'
+
+    let myChart = month_power_consumption('chart_main')
+    let option = myChart.getOption()
+    let data = option.series[0].data
+
+    let totalData = 0
+    for (let i = 0; i < data.length; i++) {
+        totalData = totalData + data[i]
+    }
+
+    document.getElementById('monthPowerConsumption').innerText = totalData + " kwh"
+
+    // 定义一个定时器，在定制器内实现数据每隔5秒会变化，
+    // 图上反映出来就是面积的大小会变化，总的月耗电量的数字会变化。
+    setInterval(() => {
+        totalData = 0
+        for (let i = 0; i < data.length; i++) {
+            data[i] = data[i] + 10000
+            if (data[i] > 600000) {
+                data[i] = data[i] - 600000;
+            }
+
+            totalData = totalData + data[i]
+        }
+
+        document.getElementById('monthPowerConsumption').innerText = totalData + " kwh"
+        myChart.setOption(option, true)
+    }, 5000)
+
+</script>
+
+</body>
+</html>
